@@ -1,18 +1,18 @@
 #!/bin/bash
 # 
 . /lib/lsb/init-functions
-sudo apt-get update && sudo apt-get -y install git 
+sudo apt-get update && sudo apt-get -y install git
 
 TEMP=/tmp
 
-cd $TEMP/ && git clone https://github.com/DeskPi-Team/deskpi_v1 
+cd $TEMP/ && git clone https://github.com/yukishimazu/deskpi_v1
 if [[ $? -ne 0 ]]; then
 	echo "Error: Can not download deskpi_v1 repository, please try again!"
 fi
 
 deskpi_daemon=deskpilite
-deskpi_lite_svc=/lib/systemd/system/$deskpi_daemon.service
-deskpi_lite_safecutoffpower_svc=/lib/systemd/system/$deskpi_daemon.safecutoffpower.service
+deskpi_lite_svc="/lib/systemd/system/${deskpi_daemon}.service"
+deskpi_lite_safecutoffpower_svc="/lib/systemd/system/${deskpi_daemon}_safecutoffpower.service"
 
 # remove old service file
 if [ -e $deskpi_lite_svc ]; then
@@ -68,7 +68,7 @@ echo "DefaultDependencies=no" >> $deskpi_lite_safecutoffpower_svc
 
 echo "[Service]" >> $deskpi_lite_safecutoffpower_svc
 echo "Type=oneshot" >> $deskpi_lite_safecutoffpower_svc
-echo "ExecStart=/usr/bin/sudo /usr/bin/safecutoffpower.py" >> $deskpi_lite_safecutoffpower_svc
+echo "ExecStart=sudo /usr/bin/python3 /usr/bin/safecutoffpower.py" >> $deskpi_lite_safecutoffpower_svc
 echo "RemainAfterExit=yes" >> $deskpi_lite_safecutoffpower_svc
 echo "TimeoutSec=1" >> $deskpi_lite_safecutoffpower_svc
 
@@ -83,8 +83,10 @@ sudo chmod 644 $deskpi_lite_safecutoffpower_svc
 
 log_action_msg "DeskPi Lite Service Load module." 
 sudo systemctl daemon-reload
-sudo systemctl enable $deskpi_daemon.service
-sudo systemctl restart $deskpi_daemon.service
+sudo systemctl enable "${deskpi_daemon}.service"
+sudo systemctl restart "${deskpi_daemon}.service"
+sudo systemctl enable "${deskpi_daemon}_safecutoffpower.service"
+sudo systemctl restart "${deskpi_daemon}_safecutoffpower.service"
 
 # Finished 
 log_success_msg "DeskPi Lite Driver installation finished successfully." 
