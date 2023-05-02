@@ -4,7 +4,7 @@
 
 daemonname="deskpilite.service"
 filelocation=/lib/systemd/system/$daemonname
-daemonname_safecutoffpower="deskpi_daemon.safecutoffpower.service"
+daemonname_safecutoffpower="deskpilite_safecutoffpower.service"
 filelocation_safecutoffpower=/lib/systemd/system/$daemonname_safecutoffpower
 
 log_action_msg "Uninstalling DeskPi Lite Driver..."
